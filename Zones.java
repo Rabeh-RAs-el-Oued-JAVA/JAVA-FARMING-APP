@@ -10,8 +10,8 @@ public abstract class Zones {
     protected List<Sensor> sensorsList;
     protected String characteristic;
     protected Boolean statusActive;
-    protected double latitude;
-    protected double longitude;
+    protected double O;
+    protected double R;
     protected List<Alert> activeAlerts;
 
     protected Zones(String name, String characteristic) {
@@ -21,6 +21,8 @@ public abstract class Zones {
         this.statusActive = true;
         this.sensorsList = new ArrayList<>();
         this.activeAlerts = new ArrayList<>();
+        this.O = 0 ; 
+        this.R = 0 ;
     }
 
     public int getCode() {
@@ -39,12 +41,12 @@ public abstract class Zones {
         return this.statusActive;
     }
 
-    public double getLatitude() {
-        return this.latitude;
+    public double getO() {
+        return this.O;
     }
 
-    public double getLongitude() {
-        return this.longitude;
+    public double getR() {
+        return this.R;
     }
 
     public List<Alert> getActiveAlerts() {
@@ -56,8 +58,8 @@ public abstract class Zones {
     }
 
     public void setLocation(double latitude, double longitude) {
-        this.latitude = latitude;
-        this.longitude = longitude;
+        this.O = latitude;
+        this.R = longitude;
     }
 
     public void addSensor(Sensor sensor) {
@@ -720,3 +722,5 @@ enum LocationType {
 enum CropsType {
     CEREAL, FRUITS, VEGETABLES
 }
+
+
