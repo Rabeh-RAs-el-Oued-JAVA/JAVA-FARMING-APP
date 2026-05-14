@@ -1,352 +1,722 @@
- from date import java.util.Date;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+package Zones ; 
 
-public abstract  class Zones{
-    protected static int counter = 1 ;
-    protected final  int code ;
-    protected String name ;
-    protected SensorsList Sensors[];
-    protected String Charactestic ;
-    protected Boolean StatusActive = true;
+public abstract class Zones {
+    protected static int counter = 1;
+    protected final int code;
+    protected String name;
+    protected List<Sensor> sensorsList;
+    protected String characteristic;
+    protected Boolean statusActive;
+    protected double latitude;
+    protected double longitude;
+    protected List<Alert> activeAlerts;
 
-    //-----------------------------------------------------
-
-    public void Desactivate(){
-        this.StatusActive = false ;
+    protected Zones(String name, String characteristic) {
+        this.code = counter++;
+        this.name = name;
+        this.characteristic = characteristic;
+        this.statusActive = true;
+        this.sensorsList = new ArrayList<>();
+        this.activeAlerts = new ArrayList<>();
     }
 
-    public void Edit_Senssors( Sensors[] New_SEnsor_List ){
-        this.SensorsList = New_SEnsor_List ;
+    public int getCode() {
+        return this.code;
     }
 
-    public void Edit_Charactestic(String New_char  ){
-        this.Charactestic = New_char ;
-    }
-    public void Edit_Status(  Boolean New_Status){
-        this.StatusActive = New_Status ;
-    }
-    public void Display(){
-        System.out.println("Zone : " + this.name + " - Code : " + this.code + " - Status : " + this.StatusActive + " - Charactestic : " + this.Charactestic + " - Sensors : " + this.Sensors.length);
-
-    }
-    public void AssignAttributes(String name )
-    {
-        this.name = name ;
-    }
-    public void AssignAttributes(Sensors[] Sensors )
-    {
-        this.Sensors = Sensors ;
-    }
-    public void AssignAttributes(String Charactestic )
-    {
-        this.Charactestic = Charactestic ;
-    }
-    public void AssignAttributes(Boolean StatusActive )
-    {
-        this.StatusActive = StatusActive ;
+    public String getName() {
+        return this.name;
     }
 
-    public void AddZone(String name , Sensors[] Sensors , String Charactestic , Boolean StatusActive )
-    {
-        this.name = name ;
-        this.Sensors = Sensors ;
-        this.Charactestic = Charactestic ;
-        this.StatusActive = StatusActive ;
-        this.code = counter++ ;
-    }
-}
-
-
-public abstract class Crops extends Zones {
-    protected Date PlantingDate ;
-    protected Date HarvestDate ;
-    protected Growth_satge GrowthStage ;
-    protected Soil_requirements SoilRequirements ;
-
-    public void DisplayGrowthStage(){
-        System.out.println("Growth Stage : " + this.GrowthStage);
-    }
-    public void UpdateGrowthStage(){
-        this.GrowthStage = this.GrowthStage.next();
-    }
-    public void RegisterCrops(String name , Sensors[] Sensors , String Charactestic , Boolean StatusActive , Date PlantingDate , Date HarvestDate , Growth_satge GrowthStage , Soil_requirements SoilRequirements ){
-        super.AddZone(name , Sensors , Charactestic , StatusActive );
-        this.PlantingDate = PlantingDate ;
-        this.HarvestDate = HarvestDate ;
-        this.GrowthStage = GrowthStage ;
-        this.SoilRequirements = SoilRequirements ;
+    public String getCharacteristic() {
+        return this.characteristic;
     }
 
-    public void DisplayCrops(){
-        super.Display();
-        System.out.println("Planting Date : " + this.PlantingDate + " - Harvest Date : " + this.HarvestDate + " - Growth Stage : " + this.GrowthStage + " - Soil Requirements : " + this.SoilRequirements);
+    public Boolean getStatusActive() {
+        return this.statusActive;
     }
 
-    public void AssignAttributes(Date PlantingDate ){
-        this.PlantingDate = PlantingDate ;
-    }
-    public void AssignAttributes(Date HarvestDate ){
-        this.HarvestDate = HarvestDate ;
-    }
-    public void AssignAttributes(Growth_satge GrowthStage ){
-        this.GrowthStage = GrowthStage ;
-    }
-    public void AssignAttributes(Soil_requirements SoilRequirements ){
-        this.SoilRequirements = SoilRequirements ;
-    }
-}
-
-public class Crops_List extends Crops, Records{
-    private CropsType Crops_Type ; 
-    private double Crops_Production ; 
-
-
-    public void CropsTypeRegister(CropsType Crops_Type ){
-        this.Crops_Type = Crops_Type ;
-    }
-    public void CropsProductionRegister(double Crops_Production ){
-        this.Crops_Production = Crops_Production ;
-    }
-    public void DisplayCrops_List(){
-        super.Display();
-        System.out.println("Crops Type : " + this.Crops_Type + " - Crops Production : " + this.Crops_Production);
+    public double getLatitude() {
+        return this.latitude;
     }
 
-    public void AddCrops_List(String name , Sensors[] Sensors , String Charactestic , Boolean StatusActive , Date PlantingDate , Date HarvestDate , Growth_satge GrowthStage , Soil_requirements SoilRequirements , CropsType Crops_Type , double Crops_Production ){
-        super.RegisterCrops(name , Sensors , Charactestic , StatusActive , PlantingDate , HarvestDate , GrowthStage , SoilRequirements );
-        this.Crops_Type = Crops_Type ;
-        this.Crops_Production = Crops_Production ;
+    public double getLongitude() {
+        return this.longitude;
     }
 
-    public void record(String recordDate , double recordValue ){
-        super.record(recordDate , this.Crops_Production );
-        super.recordWihda = "Kg" ;
-        super.recordType = this.Crops_Type.toString() ;
-    }
-}
-
-
-//---------------------------------------------------------------------------------------------- Usess Classes --------------------------------------------------------------
-public class Soil_requirements {
-
-    private double OptimalPH ; 
-    private double OptimalMoisture ; 
-
-    public void DisplaySoil_requirements(){
-        System.out.println("Optimal PH : " + this.OptimalPH + " - Optimal Moisture : " + this.OptimalMoisture);
-    }
-    public void Assign_SOil_Req(double OptimalPH , double OptimalMoisture ){
-        this.OptimalPH = OptimalPH ;
-        this.OptimalMoisture = OptimalMoisture ;
-    }
-}
-
-public class FeedingProgramme{
-    private String FeedType ; 
-    private double Qunatity ; 
-
-    public void AddFedingProgramme(String FeedType , double Qunatity ){
-        this.FeedType = FeedType ;
-        this.Qunatity = Qunatity ;
-    }
-    public void DisplayFedingProgramme(){
-        System.out.println("Feed Type : " + this.FeedType + " - Qunatity : " + this.Qunatity);
-    }
-  
-}
-public class Animals{
-    protected static int counter = 1 ;
-    private final intAnimalId  ; 
-    private int Age ; 
-    private float Weight ; 
-    private Health_status HealthStatus ; 
-
-
-    public void Assign_animals( String Species , int Age , float Weight , Health_status HealthStatus ){
-        this.AnimalId = counter++ ;
-        this.Age = Age ;
-        this.Weight = Weight ;
-        this.HealthStatus = HealthStatus ;
-    }
-    public void DisplayAnimal(){
-        System.out.println("AnimalId : " + this.AnimalId + " - Age : " + this.Age + " - Weight : " + this.Weight + " - HealthStatus : " + this.HealthStatus);
-    }
-  
-    public void Assign_animals(int Age ){
-        this.Age = Age ;
-    }
-    public void Assign_animals(float Weight ){
-        this.Weight = Weight ;
-    }
-    public void Assign_animals(Health_status HealthStatus ){
-        this.HealthStatus = HealthStatus ;
-    }
-}
-//--------------------------------------------------------------------------------------------------------------------------------------------------
-
-
-
-
-
-public abstract class LiveStrock extends Zones {
-    protected FeedingProgramme FeedingProgramme ;
-
-    public void Assign_LiveStrock(FeedingProgramme FeedingProgramme ; name , Sensors[] Sensors , String Charactestic , Boolean StatusActive ){
-        super.AddZone(name , Sensors , Charactestic , StatusActive );
-        this.FeedingProgramme = FeedingProgramme ;
-    }
-    public void DisplayLiveStrock(){
-        super.Display();
-        System.out.println("Feeding Programme : " + this.FeedingProgramme);
+    public List<Alert> getActiveAlerts() {
+        return this.activeAlerts;
     }
 
-    public void Assign_FeedingAttributes(FeedingProgramme FeedingProgramme ){
-        this.FeedingProgramme = FeedingProgramme ;
+    public List<Sensor> getSensors() {
+        return this.sensorsList;
     }
 
-
-}
-
-public class Ruminant extends LiveStrock,Records {
-    private String RuminantType ;
-    private Double MilkYield;
-
-    public void Assign_Ruminant(name , Sensors[] Sensors , String Charactestic , Boolean StatusActive , FeedingProgramme FeedingProgramme , String RuminantType , Double MilkYield ){
-        super.Assign_LiveStrock(FeedingProgramme , name , Sensors , Charactestic , StatusActive );
-        this.RuminantType = RuminantType ;
-        this.MilkYield = MilkYield ;
-    }
-    public void DisplayRuminant(){
-        super.DisplayLiveStrock();
-        System.out.println("Ruminant Type : " + this.RuminantType + " - Milk Yield : " + this.MilkYield);
+    public void setLocation(double latitude, double longitude) {
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
-    public void Assign_Ruminant_Attributes(String RuminantType ){
-        this.RuminantType = RuminantType ;
-    }
-    public void Assign_Ruminant_Attributes(Double MilkYield ){
-        this.MilkYield = MilkYield ;
-    }
-    public void record(String recordDate , double recordValue ){
-        super.record(recordDate , this.MilkYield );
-        super.recordWihda = "L" ;
-        super.recordType = this.RuminantType.toString() ;
-    }
-   
-   
-}
-
-public class Plitory extends LiveStrock,Records{
-    private String PlitoryType ;
-    private Double EggCount;
-
-    public void Assign_Plitory(name , Sensors[] Sensors , String Charactestic , Boolean StatusActive , FeedingProgramme FeedingProgramme , String PlitoryType , Double EggCount ){
-        super.Assign_LiveStrock(FeedingProgramme , name , Sensors , Charactestic , StatusActive );
-        this.PlitoryType = PlitoryType ;
-        this.EggCount = EggCount ;
-    }
-    public void DisplayPlitory(){
-        super.DisplayLiveStrock();
-        System.out.println("Plitory Type : " + this.PlitoryType + " - Egg Count : " + this.EggCount);
-    }
-
-    public void Assign_Plitory_Attributes(String PlitoryType ){
-        this.PlitoryType = PlitoryType ;
-    }
-    public void Assign_Plitory_Attributes(Double EggCount ){
-        this.EggCount = EggCount ;
-    }
-    public void record(String recordDate , double recordValue ){
-        super.record(recordDate , this.EggCount );
-        super.recordWihda = "Eggs" ;
-        super.recordType = this.PlitoryType.toString() ;
-    }
-   
-}
-
-public abstract Aquaculture extends Zones,Records{
-    protected  static int NB_ANIMALS = 0   ;
-    protected Animals[] species ; 
-    protected FeedingProgramme Fed_Programme  ;
-
-
-   public void Assign_Aquaculture(name , Sensors[] Sensors , String Charactestic , Boolean StatusActive , FeedingProgramme FeedingProgramme ,Animals[] asnimals   ){
-    super.AddZone(name,Sensors,Charactestic,StatusActive);
-    this.Fed_Programme = FeedingProgramme ; 
-    this.species = asnimals ; 
-    this.NB_ANIMALS ++ ; 
-   }
-
-   public void DisplayAquaculture(){
-    super.Display() ; 
-    for(i=1 , i<= this.NB_ANIMALS , i++){
-    species[i].displayAnimal() ; 
-    }
-    System.out.println("Nb Animals" + this.NB_ANIMALS) ; 
-    
-   }
-
-   public void Assign_animals(Animals[] asnimals ){
-    this.species[NB_ANIMALS] = asnimals ;
-    this.NB_ANIMALS ++ ;
-   }
-
-   public assign_feeding_programme(FeedingProgramme FeedingProgramme ){
-    this.Fed_Programme = FeedingProgramme ;
-   }
-
-
-   public double record_value(){
-    double sumweight = 0 ;
-    for(i=1 , i<= this.NB_ANIMALS , i++){
-    sumweight += this.species[i].getWeight() ;
-    }
-    return sumweight ;
-
-   }
-   public void record(String recordDate , double recordValue ){
-    super.record(recordDate , recordValue );
-    super.recordWihda = "Kg" ;
-    super.recordType = this.species[i].toString() ;
-   }
-}
-
-
-
-//-------------------------------------//Enum parts-------------------------------------
-
-
-
-public enum Health_status{ HEALTHY,SICK,QUARANTINE }
-public enum GROWTH_STAGE{semis, germination, croissance, maturité, récolte}
-public enum Sensorstatus{ACTIVE , SUSPENDED, FAULTY}
-public enum Locations{CROP, LIVESTOCK, AQUACULTURE}
-public enum CropsType{CERIAL,FRUITS,VEGETABLES}
-
-
-
-//----------------------------------------------------------
-
-public abstract class Records{
-        protected static int counter = 1 ;
-        protected final int recordId ;
-        protected Date recordDate ; 
-        protected double recordValue ; 
-        protected String recordType ; 
-        protected String recordWihda ; 
-
-        public void record(String recordDate , double recordValue  ){
-            this.recordId = counter++ ;
-            this.recordDate = recordDate ;
-            this.recordValue = recordValue ;
+    public void addSensor(Sensor sensor) {
+        if (sensor != null) {
+            this.sensorsList.add(sensor);
         }
+    }
 
-        public void display_record(){
-            System.out.println("RecordId : " + this.recordId + " - RecordDate : " + this.recordDate + " - RecordValue : " + this.recordValue + " - RecordType : " + this.recordType + " - RecordWihda : " + this.recordWihda);
+    public void removeSensor(Sensor sensor) {
+        this.sensorsList.remove(sensor);
+    }
+
+    public void editSensor(Sensor sensor, int index) {
+        this.sensorsList.set(index, sensor);
+    }
+
+    public void addAlert(Alert alert) {
+        if (alert != null) {
+            this.activeAlerts.add(alert);
         }
+    }
+
+    public void removeAlert(Alert alert) {
+        this.activeAlerts.remove(alert);
+    }
+
+    public void editAlert(Alert alert, int index) {
+        this.activeAlerts.set(index, alert);
+    }
+
+    public void deactivate() {
+        this.statusActive = false;
+    }
+
+    public void editSensors(List<Sensor> newSensorsList) {
+        this.sensorsList = new ArrayList<>(newSensorsList);
+    }
+
+    public void editCharacteristic(String newCharacteristic) {
+        this.characteristic = newCharacteristic;
+    }
+
+    public void editStatus(Boolean newStatus) {
+        this.statusActive = newStatus;
+    }
+
+    public void display() {
+        System.out.println("Zone: " + this.name
+                + " - Code: " + this.code
+                + " - Status: " + this.statusActive
+                + " - Characteristic: " + this.characteristic
+                + " - Sensors: " + this.sensorsList.size());
+    }
+}
+
+abstract class Crops extends Zones {
+    protected Date plantingDate;
+    protected Date harvestDate;
+    protected GrowthStage growthStage;
+    protected SoilRequirements soilRequirements;
+
+    protected Crops(String name, String characteristic, Date plantingDate, Date harvestDate,
+                    GrowthStage growthStage, SoilRequirements soilRequirements) {
+        super(name, characteristic);
+        this.plantingDate = plantingDate;
+        this.harvestDate = harvestDate;
+        this.growthStage = growthStage;
+        this.soilRequirements = soilRequirements;
+    }
+
+    public void displayGrowthStage() {
+        System.out.println("Growth Stage: " + this.growthStage);
+    }
+
+    public void updateGrowthStage() {
+        this.growthStage = this.growthStage.next();
+    }
+
+    public void displayCrops() {
+        super.display();
+        System.out.println("Planting Date: " + this.plantingDate
+                + " - Harvest Date: " + this.harvestDate
+                + " - Growth Stage: " + this.growthStage
+                + " - Soil Requirements: " + this.soilRequirements);
+    }
+
+    public void setPlantingDate(Date plantingDate) {
+        this.plantingDate = plantingDate;
+    }
+
+    public void setHarvestDate(Date harvestDate) {
+        this.harvestDate = harvestDate;
+    }
+
+    public void setGrowthStage(GrowthStage growthStage) {
+        this.growthStage = growthStage;
+    }
+
+    public Date getPlantingDate() {
+        return this.plantingDate;
+    }
+
+    public Date getHarvestDate() {
+        return this.harvestDate;
+    }
+
+    public GrowthStage getGrowthStage() {
+        return this.growthStage;
+    }
+}
+
+class CropsList extends Crops implements IRecordable {
+    private CropsType cropsType;
+    private double cropsProduction;
+    private final List<ProductionRecord> records;
+
+    public CropsList(String name, String characteristic, Date plantingDate, Date harvestDate,
+                     GrowthStage growthStage, SoilRequirements soilRequirements,
+                     CropsType cropsType, double cropsProduction) {
+        super(name, characteristic, plantingDate, harvestDate, growthStage, soilRequirements);
+        this.cropsType = cropsType;
+        this.cropsProduction = cropsProduction;
+        this.records = new ArrayList<>();
+    }
+
+    public void setCropsType(CropsType cropsType) {
+        this.cropsType = cropsType;
+    }
+
+    public void setCropsProduction(double cropsProduction) {
+        this.cropsProduction = cropsProduction;
+    }
+
+    public void displayCropsList() {
+        super.displayCrops();
+        System.out.println("Crops Type: " + this.cropsType + " - Crops Production: " + this.cropsProduction);
+    }
+
+    @Override
+    public void record(Date recordDate, double recordValue) {
+        this.records.add(new ProductionRecord(recordDate, recordValue, this.cropsType.toString(), "Kg"));
+    }
+
+    @Override
+    public void displayRecord() {
+        for (ProductionRecord record : this.records) {
+            record.display();
+        }
+    }
+
+    @Override
+    public List<ProductionRecord> getRecordsInDateRange(Date startDate, Date endDate) {
+        List<ProductionRecord> result = new ArrayList<>();
+        for (ProductionRecord record : this.records) {
+            if (!record.getRecordDate().before(startDate) && !record.getRecordDate().after(endDate)) {
+                result.add(record);
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public double getTotalProduction() {
+        double total = 0;
+        for (ProductionRecord record : this.records) {
+            total += record.getRecordValue();
+        }
+        return total;
+    }
+
+    @Override
+    public double getAverageProduction() {
+        return this.records.isEmpty() ? 0 : getTotalProduction() / this.records.size();
+    }
+
+    @Override
+    public String generateProductionReport() {
+        return "Crops production report - Type: " + this.cropsType
+                + ", Total: " + getTotalProduction()
+                + ", Average: " + getAverageProduction();
+    }
+}
+
+abstract class LiveStock extends Zones {
+    protected FeedingProgramme feedingProgramme;
+    protected List<Animal> animalsList;
+    protected String feedType;
+    protected double feedQuantity;
+
+    protected LiveStock(String name, String characteristic, FeedingProgramme feedingProgramme) {
+        super(name, characteristic);
+        this.feedingProgramme = feedingProgramme;
+        this.animalsList = new ArrayList<>();
+    }
+
+    public void displayLiveStock() {
+        super.display();
+        System.out.println("Feeding Programme: " + this.feedingProgramme);
+    }
+
+    public void setFeedingProgramme(FeedingProgramme feedingProgramme) {
+        this.feedingProgramme = feedingProgramme;
+    }
+
+    public FeedingProgramme getFeedingProgramme() {
+        return this.feedingProgramme;
+    }
+
+    public void addAnimal(Animal animal) {
+        if (animal != null) {
+            this.animalsList.add(animal);
+        }
+    }
+
+    public void removeAnimal(Animal animal) {
+        this.animalsList.remove(animal);
+    }
+
+    public List<Animal> getAnimals() {
+        return this.animalsList;
+    }
+
+    public int getTotalAnimalCount() {
+        return this.animalsList.size();
+    }
+}
+
+class Ruminant extends LiveStock implements IRecordable {
+    private String ruminantType;
+    private double milkYield;
+    private final List<ProductionRecord> records;
+
+    public Ruminant(String name, String characteristic, FeedingProgramme feedingProgramme,
+                    String ruminantType, double milkYield) {
+        super(name, characteristic, feedingProgramme);
+        this.ruminantType = ruminantType;
+        this.milkYield = milkYield;
+        this.records = new ArrayList<>();
+    }
+
+    public String getRuminantType() {
+        return this.ruminantType;
+    }
+
+    public void setRuminantType(String ruminantType) {
+        this.ruminantType = ruminantType;
+    }
+
+    public double getMilkYield() {
+        return this.milkYield;
+    }
+
+    public void setMilkYield(double milkYield) {
+        this.milkYield = milkYield;
+    }
+
+    public void displayRuminant() {
+        super.displayLiveStock();
+        System.out.println("Ruminant Type: " + this.ruminantType + " - Milk Yield: " + this.milkYield);
+    }
+
+    @Override
+    public void record(Date recordDate, double recordValue) {
+        this.records.add(new ProductionRecord(recordDate, recordValue, this.ruminantType, "L"));
+    }
+
+    @Override
+    public void displayRecord() {
+        for (ProductionRecord record : this.records) {
+            record.display();
+        }
+    }
+
+    @Override
+    public List<ProductionRecord> getRecordsInDateRange(Date startDate, Date endDate) {
+        return RecordsFilter.inDateRange(this.records, startDate, endDate);
+    }
+
+    @Override
+    public double getTotalProduction() {
+        return RecordsFilter.total(this.records);
+    }
+
+    @Override
+    public double getAverageProduction() {
+        return this.records.isEmpty() ? 0 : getTotalProduction() / this.records.size();
+    }
+
+    @Override
+    public String generateProductionReport() {
+        return "Ruminant production report - Type: " + this.ruminantType
+                + ", Total: " + getTotalProduction()
+                + ", Average: " + getAverageProduction();
+    }
+}
+
+class Poultry extends LiveStock implements IRecordable {
+    private String poultryType;
+    private double eggCount;
+    private final List<ProductionRecord> records;
+
+    public Poultry(String name, String characteristic, FeedingProgramme feedingProgramme,
+                   String poultryType, double eggCount) {
+        super(name, characteristic, feedingProgramme);
+        this.poultryType = poultryType;
+        this.eggCount = eggCount;
+        this.records = new ArrayList<>();
+    }
+
+    public String getPoultryType() {
+        return this.poultryType;
+    }
+
+    public void setPoultryType(String poultryType) {
+        this.poultryType = poultryType;
+    }
+
+    public void setEggCount(double eggCount) {
+        this.eggCount = eggCount;
+    }
+
+    public double getEggCount() {
+        return this.eggCount;
+    }
+
+    public void displayPoultry() {
+        super.displayLiveStock();
+        System.out.println("Poultry Type: " + this.poultryType + " - Egg Count: " + this.eggCount);
+    }
+
+    @Override
+    public void record(Date recordDate, double recordValue) {
+        this.records.add(new ProductionRecord(recordDate, recordValue, this.poultryType, "Eggs"));
+    }
+
+    @Override
+    public void displayRecord() {
+        for (ProductionRecord record : this.records) {
+            record.display();
+        }
+    }
+
+    @Override
+    public List<ProductionRecord> getRecordsInDateRange(Date startDate, Date endDate) {
+        return RecordsFilter.inDateRange(this.records, startDate, endDate);
+    }
+
+    @Override
+    public double getTotalProduction() {
+        return RecordsFilter.total(this.records);
+    }
+
+    @Override
+    public double getAverageProduction() {
+        return this.records.isEmpty() ? 0 : getTotalProduction() / this.records.size();
+    }
+
+    @Override
+    public String generateProductionReport() {
+        return "Poultry production report - Type: " + this.poultryType
+                + ", Total: " + getTotalProduction()
+                + ", Average: " + getAverageProduction();
+    }
+}
+
+abstract class Aquaculture extends Zones implements IRecordable {
+    protected List<Animal> species;
+    protected FeedingProgramme feedProgramme;
+    protected double waterTemperature;
+    protected double dissolvedOxygen;
+    protected double waterPH;
+    private final List<ProductionRecord> records;
+
+    protected Aquaculture(String name, String characteristic, FeedingProgramme feedProgramme) {
+        super(name, characteristic);
+        this.feedProgramme = feedProgramme;
+        this.species = new ArrayList<>();
+        this.records = new ArrayList<>();
+    }
+
+    public void setWaterQuality(double temperature, double oxygen, double pH) {
+        this.waterTemperature = temperature;
+        this.dissolvedOxygen = oxygen;
+        this.waterPH = pH;
+    }
+
+    public double getWaterTemperature() {
+        return this.waterTemperature;
+    }
+
+    public double getDissolvedOxygen() {
+        return this.dissolvedOxygen;
+    }
+
+    public double getWaterPH() {
+        return this.waterPH;
+    }
+
+    public void addSpecies(Animal animal) {
+        if (animal != null) {
+            this.species.add(animal);
+        }
+    }
+
+    public void deleteSpecies(Animal animal) {
+        this.species.remove(animal);
+    }
+
+    public int getSpeciesCount() {
+        return this.species.size();
+    }
+
+    public void setFeedingProgramme(FeedingProgramme feedingProgramme) {
+        this.feedProgramme = feedingProgramme;
+    }
+
+    public FeedingProgramme getFeedingProgramme() {
+        return this.feedProgramme;
+    }
+
+    public void displayAquaculture() {
+        super.display();
+        for (Animal animal : this.species) {
+            animal.display();
+        }
+        System.out.println("Nb Animals: " + this.species.size());
+    }
+
+    public double recordValue() {
+        double sumWeight = 0;
+        for (Animal animal : this.species) {
+            sumWeight += animal.getWeight();
+        }
+        return sumWeight;
+    }
+
+    @Override
+    public void record(Date recordDate, double recordValue) {
+        this.records.add(new ProductionRecord(recordDate, recordValue, "Aquaculture", "Kg"));
+    }
+
+    @Override
+    public void displayRecord() {
+        for (ProductionRecord record : this.records) {
+            record.display();
+        }
+    }
+
+    @Override
+    public List<ProductionRecord> getRecordsInDateRange(Date startDate, Date endDate) {
+        return RecordsFilter.inDateRange(this.records, startDate, endDate);
+    }
+
+    @Override
+    public double getTotalProduction() {
+        return RecordsFilter.total(this.records);
+    }
+
+    @Override
+    public double getAverageProduction() {
+        return this.records.isEmpty() ? 0 : getTotalProduction() / this.records.size();
+    }
+
+    @Override
+    public String generateProductionReport() {
+        return "Aquaculture production report - Total: " + getTotalProduction()
+                + ", Average: " + getAverageProduction();
+    }
+}
+
+class SoilRequirements {
+    private double optimalPH;
+    private double optimalMoisture;
+
+    public SoilRequirements(double optimalPH, double optimalMoisture) {
+        this.optimalPH = optimalPH;
+        this.optimalMoisture = optimalMoisture;
+    }
+
+    public void display() {
+        System.out.println("Optimal PH: " + this.optimalPH + " - Optimal Moisture: " + this.optimalMoisture);
+    }
+
+    @Override
+    public String toString() {
+        return "PH=" + this.optimalPH + ", moisture=" + this.optimalMoisture;
+    }
+}
+
+class FeedingProgramme {
+    private String feedType;
+    private double quantity;
+
+    public FeedingProgramme(String feedType, double quantity) {
+        this.feedType = feedType;
+        this.quantity = quantity;
+    }
+
+    public void display() {
+        System.out.println("Feed Type: " + this.feedType + " - Quantity: " + this.quantity);
+    }
+
+    @Override
+    public String toString() {
+        return this.feedType + " (" + this.quantity + ")";
+    }
+}
+
+class HealthEvent {
+    private Date eventDate;
+    private HealthStatus healthStatus;
+    private String description;
+
+    public HealthEvent(Date eventDate, HealthStatus healthStatus, String description) {
+        this.eventDate = eventDate;
+        this.healthStatus = healthStatus;
+        this.description = description;
+    }
+
+    public Date getEventDate() {
+        return this.eventDate;
+    }
+
+    public HealthStatus getHealthStatus() {
+        return this.healthStatus;
+    }
+
+    public String getDescription() {
+        return this.description;
+    }
+}
+
+class Animal {
+    protected static int counter = 1;
+    private final int animalId;
+    private String species;
+    private int age;
+    private float weight;
+    private HealthStatus healthStatus;
+    private List<HealthEvent> healthEventsList;
+
+    public Animal(String species, int age, float weight, HealthStatus healthStatus) {
+        this.animalId = counter++;
+        this.species = species;
+        this.age = age;
+        this.weight = weight;
+        this.healthStatus = healthStatus;
+        this.healthEventsList = new ArrayList<>();
+    }
+
+    public void display() {
+        System.out.println("AnimalId: " + this.animalId
+                + " - Species: " + this.species
+                + " - Age: " + this.age
+                + " - Weight: " + this.weight
+                + " - HealthStatus: " + this.healthStatus);
+    }
+
+    public int getAnimalId() {
+        return this.animalId;
+    }
+
+    public float getWeight() {
+        return this.weight;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public void setWeight(float weight) {
+        this.weight = weight;
+    }
+
+    public void setHealthStatus(HealthStatus healthStatus) {
+        this.healthStatus = healthStatus;
+    }
+
+    public void recordHealthEvent(HealthStatus status, String description, Date date) {
+        HealthEvent event = new HealthEvent(date, status, description);
+        this.healthEventsList.add(event);
+    }
+}
 
 
 
 
 
+interface IRecordable {
+    void record(Date recordDate, double recordValue);
 
+    void displayRecord();
+
+    List<ProductionRecord> getRecordsInDateRange(Date startDate, Date endDate);
+
+    double getTotalProduction();
+
+    double getAverageProduction();
+
+    String generateProductionReport();
+}
+
+class ProductionRecord {
+    private static int counter = 1;
+    private final int recordId;
+    private Date recordDate;
+    private double recordValue;
+    private String recordType;
+    private String recordUnit;
+
+    public ProductionRecord(Date recordDate, double recordValue, String recordType, String recordUnit) {
+        this.recordId = counter++;
+        this.recordDate = recordDate;
+        this.recordValue = recordValue;
+        this.recordType = recordType;
+        this.recordUnit = recordUnit;
+    }
+
+    public Date getRecordDate() {
+        return this.recordDate;
+    }
+
+    public double getRecordValue() {
+        return this.recordValue;
+    }
+
+    public void display() {
+        System.out.println("RecordId: " + this.recordId
+                + " - RecordDate: " + this.recordDate
+                + " - RecordValue: " + this.recordValue
+                + " - RecordType: " + this.recordType
+                + " - RecordUnit: " + this.recordUnit);
+    }
+}
+
+
+
+enum HealthStatus {
+    HEALTHY, SICK, QUARANTINE
+}
+
+enum GrowthStage {
+    SEMIS, GERMINATION, CROISSANCE, MATURITE, RECOLTE;
+
+    public GrowthStage next() {
+        GrowthStage[] values = values();
+        int nextIndex = ordinal() + 1;
+        return nextIndex < values.length ? values[nextIndex] : this;
+    }
+}
+
+enum SensorStatus {
+    ACTIVE, SUSPENDED, FAULTY
+}
+
+enum LocationType {
+    CROP, LIVESTOCK, AQUACULTURE
+}
+
+enum CropsType {
+    CEREAL, FRUITS, VEGETABLES
 }
