@@ -1,7 +1,14 @@
+package Zones ; 
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-package Zones ; 
+
+class TypeException extends RuntimeException {
+    public TypeException(String message) {
+        super(message);
+    }
+}
 
 public abstract class Zones {
     protected static int counter = 1;
@@ -23,15 +30,24 @@ public abstract class Zones {
         this.activeAlerts = new ArrayList<>();
     }
 
+    private void checkZoneActive() {
+        if (!Boolean.TRUE.equals(this.statusActive)) {
+            throw new IllegalStateException("Zone is inactive. Change the zone status before using this functionality.");
+        }
+    }
+
     public int getCode() {
+        checkZoneActive();
         return this.code;
     }
 
     public String getName() {
+        checkZoneActive();
         return this.name;
     }
 
     public String getCharacteristic() {
+        checkZoneActive();
         return this.characteristic;
     }
 
@@ -40,51 +56,68 @@ public abstract class Zones {
     }
 
     public double getLatitude() {
+        checkZoneActive();
         return this.latitude;
     }
 
     public double getLongitude() {
+        checkZoneActive();
         return this.longitude;
     }
 
     public List<Alert> getActiveAlerts() {
+        checkZoneActive();
         return this.activeAlerts;
     }
 
     public List<Sensor> getSensors() {
+        checkZoneActive();
         return this.sensorsList;
     }
 
     public void setLocation(double latitude, double longitude) {
+        checkZoneActive();
+        if (Double.isNaN(latitude) || Double.isInfinite(latitude) || latitude < -90 || latitude > 90) {
+            throw new TypeException("Latitude must be a valid number between -90 and 90.");
+        }
+        if (Double.isNaN(longitude) || Double.isInfinite(longitude) || longitude < -180 || longitude > 180) {
+            throw new TypeException("Longitude must be a valid number between -180 and 180.");
+        }
         this.latitude = latitude;
         this.longitude = longitude;
     }
 
     public void addSensor(Sensor sensor) {
+        checkZoneActive();
         if (sensor != null) {
             this.sensorsList.add(sensor);
         }
     }
 
     public void removeSensor(Sensor sensor) {
+        checkZoneActive();
         this.sensorsList.remove(sensor);
     }
 
     public void editSensor(Sensor sensor, int index) {
+        checkZoneActive();
         this.sensorsList.set(index, sensor);
     }
 
     public void addAlert(Alert alert) {
+        checkZoneActive();
         if (alert != null) {
             this.activeAlerts.add(alert);
         }
     }
 
     public void removeAlert(Alert alert) {
+        checkZoneActive();
         this.activeAlerts.remove(alert);
     }
 
     public void editAlert(Alert alert, int index) {
+        checkZoneActive();
         this.activeAlerts.set(index, alert);
     }
 
@@ -93,10 +126,12 @@ public abstract class Zones {
     }
 
     public void editSensors(List<Sensor> newSensorsList) {
+        checkZoneActive();
         this.sensorsList = new ArrayList<>(newSensorsList);
     }
 
     public void editCharacteristic(String newCharacteristic) {
+        checkZoneActive();
         this.characteristic = newCharacteristic;
     }
 
@@ -105,6 +140,7 @@ public abstract class Zones {
     }
 
     public void display() {
+        checkZoneActive();
         System.out.println("Zone: " + this.name
                 + " - Code: " + this.code
                 + " - Status: " + this.statusActive
@@ -145,14 +181,23 @@ abstract class Crops extends Zones {
     }
 
     public void setPlantingDate(Date plantingDate) {
+        if (plantingDate == null) {
+            throw new TypeException("Planting date must be a valid Date.");
+        }
         this.plantingDate = plantingDate;
     }
 
     public void setHarvestDate(Date harvestDate) {
+        if (harvestDate == null) {
+            throw new TypeException("Harvest date must be a valid Date.");
+        }
         this.harvestDate = harvestDate;
     }
 
     public void setGrowthStage(GrowthStage growthStage) {
+        if (growthStage == null) {
+            throw new TypeException("Growth stage must be a valid GrowthStage.");
+        }
         this.growthStage = growthStage;
     }
 
@@ -184,10 +229,16 @@ class CropsList extends Crops implements IRecordable {
     }
 
     public void setCropsType(CropsType cropsType) {
+        if (cropsType == null) {
+            throw new TypeException("Crops type must be a valid CropsType.");
+        }
         this.cropsType = cropsType;
     }
 
     public void setCropsProduction(double cropsProduction) {
+        if (Double.isNaN(cropsProduction) || Double.isInfinite(cropsProduction) || cropsProduction < 0) {
+            throw new TypeException("Crops production must be a positive number.");
+        }
         this.cropsProduction = cropsProduction;
     }
 
@@ -259,6 +310,9 @@ abstract class LiveStock extends Zones {
     }
 
     public void setFeedingProgramme(FeedingProgramme feedingProgramme) {
+        if (feedingProgramme == null) {
+            throw new TypeException("Feeding programme must be a valid FeedingProgramme.");
+        }
         this.feedingProgramme = feedingProgramme;
     }
 
@@ -303,6 +357,9 @@ class Ruminant extends LiveStock implements IRecordable {
     }
 
     public void setRuminantType(String ruminantType) {
+        if (ruminantType == null || ruminantType.trim().isEmpty()) {
+            throw new TypeException("Ruminant type must be a non-empty String.");
+        }
         this.ruminantType = ruminantType;
     }
 
@@ -311,6 +368,9 @@ class Ruminant extends LiveStock implements IRecordable {
     }
 
     public void setMilkYield(double milkYield) {
+        if (Double.isNaN(milkYield) || Double.isInfinite(milkYield) || milkYield < 0) {
+            throw new TypeException("Milk yield must be a positive number.");
+        }
         this.milkYield = milkYield;
     }
 
@@ -372,10 +432,16 @@ class Poultry extends LiveStock implements IRecordable {
     }
 
     public void setPoultryType(String poultryType) {
+        if (poultryType == null || poultryType.trim().isEmpty()) {
+            throw new TypeException("Poultry type must be a non-empty String.");
+        }
         this.poultryType = poultryType;
     }
 
     public void setEggCount(double eggCount) {
+        if (Double.isNaN(eggCount) || Double.isInfinite(eggCount) || eggCount < 0) {
+            throw new TypeException("Egg count must be a positive number.");
+        }
         this.eggCount = eggCount;
     }
 
@@ -439,6 +505,15 @@ abstract class Aquaculture extends Zones implements IRecordable {
     }
 
     public void setWaterQuality(double temperature, double oxygen, double pH) {
+        if (Double.isNaN(temperature) || Double.isInfinite(temperature)) {
+            throw new TypeException("Water temperature must be a valid number.");
+        }
+        if (Double.isNaN(oxygen) || Double.isInfinite(oxygen) || oxygen < 0) {
+            throw new TypeException("Dissolved oxygen must be a positive number.");
+        }
+        if (Double.isNaN(pH) || Double.isInfinite(pH) || pH < 0 || pH > 14) {
+            throw new TypeException("Water pH must be a valid number between 0 and 14.");
+        }
         this.waterTemperature = temperature;
         this.dissolvedOxygen = oxygen;
         this.waterPH = pH;
@@ -471,6 +546,9 @@ abstract class Aquaculture extends Zones implements IRecordable {
     }
 
     public void setFeedingProgramme(FeedingProgramme feedingProgramme) {
+        if (feedingProgramme == null) {
+            throw new TypeException("Feeding programme must be a valid FeedingProgramme.");
+        }
         this.feedProgramme = feedingProgramme;
     }
 
@@ -625,14 +703,23 @@ class Animal {
     }
 
     public void setAge(int age) {
+        if (age < 0) {
+            throw new TypeException("Age must be a positive integer.");
+        }
         this.age = age;
     }
 
     public void setWeight(float weight) {
+        if (Float.isNaN(weight) || Float.isInfinite(weight) || weight < 0) {
+            throw new TypeException("Weight must be a positive number.");
+        }
         this.weight = weight;
     }
 
     public void setHealthStatus(HealthStatus healthStatus) {
+        if (healthStatus == null) {
+            throw new TypeException("Health status must be a valid HealthStatus.");
+        }
         this.healthStatus = healthStatus;
     }
 
@@ -645,6 +732,55 @@ class Animal {
 
 
 
+
+class Alert {
+    private int alertId;
+    private String message;
+    private Date alertDate;
+
+    public Alert(int alertId, String message) {
+        this.alertId = alertId;
+        this.message = message;
+        this.alertDate = new Date();
+    }
+
+    public int getAlertId() {
+        return this.alertId;
+    }
+
+    public String getMessage() {
+        return this.message;
+    }
+
+    public Date getAlertDate() {
+        return this.alertDate;
+    }
+}
+
+class Sensor {
+    private String name;
+    private SensorStatus status;
+
+    public Sensor(String name, SensorStatus status) {
+        this.name = name;
+        this.status = status;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public SensorStatus getStatus() {
+        return this.status;
+    }
+
+    public void setStatus(SensorStatus status) {
+        if (status == null) {
+            throw new TypeException("Sensor status must be a valid SensorStatus.");
+        }
+        this.status = status;
+    }
+}
 
 interface IRecordable {
     void record(Date recordDate, double recordValue);
@@ -694,6 +830,29 @@ class ProductionRecord {
 }
 
 
+
+class RecordsFilter {
+    private RecordsFilter() {
+    }
+
+    public static List<ProductionRecord> inDateRange(List<ProductionRecord> records, Date startDate, Date endDate) {
+        List<ProductionRecord> result = new ArrayList<>();
+        for (ProductionRecord record : records) {
+            if (!record.getRecordDate().before(startDate) && !record.getRecordDate().after(endDate)) {
+                result.add(record);
+            }
+        }
+        return result;
+    }
+
+    public static double total(List<ProductionRecord> records) {
+        double total = 0;
+        for (ProductionRecord record : records) {
+            total += record.getRecordValue();
+        }
+        return total;
+    }
+}
 
 enum HealthStatus {
     HEALTHY, SICK, QUARANTINE
