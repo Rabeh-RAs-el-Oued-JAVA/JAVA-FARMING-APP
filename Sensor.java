@@ -5,6 +5,7 @@ protected int minthreshold;
 protected int maxthreshold;
 protected String name;
 protected status status;
+
     public Sensors(int code, location location, int minthreshold, int maxthreshold) {
         this.code = code;
         this.location = location;
@@ -63,29 +64,47 @@ grap,aquaculture,livestock
 enum status{
     active,faulty,suspended
 }
-    
+enum  typee{
+    biometric,enviromental,soil,water
+}
+enum units{
+C,acivity,Per,PH,rain
+}   
 interface activation{
     void changestatus(status status);
 }
- /*class numuricalsensors extends Sensors{
- protected int value;
-protected String unit;
-public numuricalsensors(int code, location location, int minthreshold, int maxthreshold, int value, String unit) {
+ class numuricalsensors extends Sensors{
+ protected typee type;
+ 
+    protected int value;
+protected units unit;
+protected boolean outofrange=false;
+public numuricalsensors(int code, location location, int minthreshold, int maxthreshold, int value, units unit, typee type,boolean  outofrange ) {
         super(code, location, minthreshold, maxthreshold);
         this.value = value;
+        //test threshold
+        if(value<minthreshold || value>maxthreshold){
+this.outofrange=true;
+        }
         this.unit = unit;
+        this.type = type;
+     
     }
     public void setValue(int value) {
         this.value = value;
+     
     }   
     public void setUnit(String unit) {
-        this.unit = unit;
+        this.unit = units.valueOf(unit);
     }
         public int getValue() {
             return value;
         }
-        public String getUnit() {
+        public units getUnit() {
             return unit;
+        }
+         public typee getType() {
+            return type;
         }
     @Override
     public void displayinfo() {
@@ -96,147 +115,49 @@ public numuricalsensors(int code, location location, int minthreshold, int maxth
 
     
     
-}*/
-class gpssensors extends Sensors{
-int longitude;
-    int latitude;
-    public gpssensors(int code, location location, int minthreshold, int maxthreshold, int longitude, int latitude) {
-        super(code, location, minthreshold, maxthreshold);
-        this.longitude = longitude;
-        this.latitude = latitude;
+}
+ class temperature extends numuricalsensors{
+    public temperature(int code, location location, int minthreshold, int maxthreshold, int value, String unit,typee type,boolean outofrange ) {
+        super(code, location, minthreshold, maxthreshold, value, units.C, type,outofrange);
     }
 
-    public void setLatitude(int latitude) {
-        this.latitude = latitude;
-    }
-    public void setLongitude(int longitude) {
-        this.longitude = longitude;
-    }
-        public int getLatitude() {
-            return latitude;
-        }
-        public int getLongitude() {
-            return longitude;
-        }   
+    
+}
+  class activitylevel extends numuricalsensors{
+    public activitylevel(int code, location location, int minthreshold, int maxthreshold, int value, String unit,typee type,boolean outofrange) {
+        super(code, location, minthreshold, maxthreshold, value, units.acivity, typee.biometric,outofrange);
+    }}
 
-    @Override
-    public void displayinfo() {
-        super.displayinfo();
-        System.out.println("longitude: "+longitude);
-        System.out.println("latitude: "+latitude);  
+ class humidity extends numuricalsensors{
+    public humidity(int code, location location, int minthreshold, int maxthreshold, int value, String unit,typee type,boolean outofrange) {
+        super(code, location, minthreshold, maxthreshold, value, units.C, typee.enviromental,outofrange);
     }
-        
-
 }
-
- class biometricsensors extends Sensors{
-private int bodytemp;
-private String bodytempunit;
-    private int activitylevel;
-    private String activityunit;
-
-    public biometricsensors(int code, location location, int minthreshold, int maxthreshold, int value, String unit,int bodytemp,int activitylevel,String activityunit) {
-        super(code, location, minthreshold, maxthreshold);
-        this.activitylevel=activitylevel;
-        this.activityunit=activityunit;
-        this.bodytemp=bodytemp;
+ class rainfall extends numuricalsensors{
+    public rainfall(int code, location location, int minthreshold, int maxthreshold, int value, String unit,typee type,boolean outofrange) {
+        super(code, location, minthreshold, maxthreshold, value, units.rain, typee.enviromental,outofrange);
     }
-public void setbodytemp(int bodytemp){
- this.bodytemp=bodytemp;
+}
+class soilmoisture extends numuricalsensors{
+    public soilmoisture(int code, location location, int minthreshold, int maxthreshold, int value, String unit,typee type,boolean outofrange) {
+        super(code, location, minthreshold, maxthreshold, value, units.Per, typee.soil,outofrange);
     }
-public void setactivitylevel(int activitylevel){
-    this.activitylevel=activitylevel;
 }
-public void setactivtyunit(String unity){
-    activityunit=unity;
+class ph extends numuricalsensors{
+    public ph(int code, location location, int minthreshold, int maxthreshold, int value, String unit,typee type,boolean outofrange) {
+        super(code, location, minthreshold, maxthreshold, value, units.PH, typee.soil,outofrange);
+    }
 }
-public int getbodytemp(){
-    return this.bodytemp;
-}
-public int getactivitylevel(){
-    return this.activitylevel;
-}
-public String getactivityunit(){
-    return this.activityunit;
+ class nitrogenlevel extends numuricalsensors{
+    public nitrogenlevel(int code, location location, int minthreshold, int maxthreshold, int value, String unit,typee type,boolean outofrange) {
+        super(code, location, minthreshold, maxthreshold, value, units.Per, typee.soil,outofrange);
+    }
 }
 
-}
-//lmra lifatt hbst hna
- class enviromental extends Sensors {
-private int humidity;
-private int temperature;
-private  boolean rainfall;
-public enviromental(int code, location location, int minthreshold, int maxthreshold, int value, String unit,int humidity,int temperature,boolean rainfall) {
-        super(code, location, minthreshold, maxthreshold);
-        this.humidity=humidity;
-        this.temperature=temperature;
-        this.rainfall=rainfall;
+class dissolvedoxygen extends numuricalsensors{
+    public dissolvedoxygen(int code, location location, int minthreshold, int maxthreshold, int value, String unit,typee type,boolean outofrange) {
+        super(code, location, minthreshold, maxthreshold, value, units.Per, typee.water,outofrange);
     }
-public void setHumidity(int humidity){
-    this.humidity=humidity; }
-public void setTemperature(int temperature){
-    this.temperature=temperature;
-}
-public void setRainfall(boolean rainfall){
-    this.rainfall=rainfall;
-}
-public int getHumidity(){
-    return this.humidity;
-}
-public int getTemperature(){
-    return this.temperature;
-}
-public boolean isRainfall(){
-    return this.rainfall;
 }
 
-}
- class soilsensors extends Sensors{
-private int moisture;
-private int ph;
-private String nitrogenlevel;
-public soilsensors(int code, location location, int minthreshold, int maxthreshold, int value, String unit, int moisture, int ph, String nitrogenlevel) {
-    super(code, location, minthreshold, maxthreshold);
-    this.moisture = moisture;
-    this.ph = ph;
-    this.nitrogenlevel = nitrogenlevel;
-}
-public void setMoisture(int moisture){
-    this.moisture=moisture;
-}
-public void setPh(int ph){
-    this.ph=ph;
-}
-public void setNitrogenlevel(String nitrogenlevel){
-    this.nitrogenlevel=nitrogenlevel;
-}
-public int getMoisture(){
-    return this.moisture;
-}
-public int getPh(){
-    return this.ph;
-}
-public String getNitrogenlevel(){
-    return this.nitrogenlevel;
-}
-}
- class watersensors extends Sensors{
-private int temp;
-private int dissolvedoxygen;
-public watersensors(int code, location location, int minthreshold, int maxthreshold, int value, String unit, int temp, int dissolvedoxygen) {
-    super(code, location, minthreshold, maxthreshold);
-    this.temp = temp;
-    this.dissolvedoxygen = dissolvedoxygen; }
-public void setTemp(int temp){
-    this.temp=temp;
-}
-public void setDissolvedoxygen(int dissolvedoxygen){
-    this.dissolvedoxygen=dissolvedoxygen;
-}   
-public int getTemp(){
-    return this.temp;
-}
-public int getDissolvedoxygen(){
-    return this.dissolvedoxygen;
-}
-}   
+
