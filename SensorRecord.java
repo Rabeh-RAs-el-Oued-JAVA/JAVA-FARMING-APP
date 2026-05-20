@@ -1,3 +1,7 @@
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.ArrayList;
+
 enum AlertLevel {
     WARNING, CRITICAL
 }
@@ -8,7 +12,6 @@ class Alert {
     private final LocalDateTime triggeredAt;
     private       boolean       acknowledged;
     private final double sensorCode ;           
-    
 
     public Alert(AlertLevel level, String message , double code) {
         this.level        = level;
@@ -16,7 +19,6 @@ class Alert {
         this.triggeredAt  = LocalDateTime.now();
         this.acknowledged = false;
         this.sensorCode = code ; 
-
     }
 
     public void       acknowledge()       { this.acknowledged = true; }
@@ -31,24 +33,20 @@ class Alert {
     }
 }
 
-
-
 abstract class Sensorrecord {
     protected Sensors sensor;
     protected String timestamp;
-    protected  static List<History>  alertes ;
+    protected static List<Alert> alertes = new ArrayList<>();
     protected Alert alert;
 
-    public Sensorrecord(Sensors sensor, String timestamp, <History> alertes, Alert alert) {
+    public Sensorrecord(Sensors sensor, String timestamp, List<Alert> alertes, Alert alert) {
         this.sensor = sensor;
         this.timestamp = timestamp;
-        this.alertes = new ArrayList<History>();
         this.alert = alert;
     }
 
-
-
-
+    public abstract void displayRecord();
+    public abstract void TestThreshold();
 }
 
 class NumericalRecord extends Sensorrecord {
@@ -56,9 +54,21 @@ class NumericalRecord extends Sensorrecord {
     private String unit;
 
     public NumericalRecord(Sensors sensor) {
-        super(sensor, timestamp, alertes, alert);
-        this.value = sensor.getValue();
-        this.unit = sensor.getUnit();
+        super(sensor, java.time.LocalDateTime.now().toString(), alertes, null);
+        if (sensor instanceof numuricalsensors) {
+            numuricalsensors ns = (numuricalsensors) sensor;
+            this.value = ns.getValue();
+            this.unit = ns.getUnit() != null ? ns.getUnit().toString() : "";
+        }
+    }
+
+    public NumericalRecord(Sensors sensor, String timestamp) {
+        super(sensor, timestamp, alertes, null);
+        if (sensor instanceof numuricalsensors) {
+            numuricalsensors ns = (numuricalsensors) sensor;
+            this.value = ns.getValue();
+            this.unit = ns.getUnit() != null ? ns.getUnit().toString() : "";
+        }
     }
 
     public double getValue() { return value; }
@@ -66,61 +76,51 @@ class NumericalRecord extends Sensorrecord {
 
     @Override
     public void displayRecord() {
-        System.out.println("Sensor: " + sensor.getName());
-        System.out.println("Timestamp: " + timestamp);
-        System.out.println("Value: " + value + " " + unit);
+        java.lang.System.out.println("Sensor: " + (sensor != null ? sensor.getName() : "null"));
+        java.lang.System.out.println("Timestamp: " + timestamp);
+        java.lang.System.out.println("Value: " + value + " " + unit);
     }
 
+    @Override
     public void TestThreshold() {
-                if(value < sensor.getMinthreshold() ) {
-                    if(value  < sensor.getMinthreshold() - sensor.getMinthreshold() * 0.2) {
-                        alert = new Alert(AlertLevel.CRITICAL, "Value is below threshold by more than 20%");
-                        alertes.add(alert);
-                        this.alert = alert;
-                    }else{
-                        alert = new Alert(AlertLevel.WARNING, "Value is below threshold by less than 20%");
-                        alertes.add(alert);
-                        this.alert = alert;
-                    }
-
-                
+        if (sensor != null) {
+            if (value < sensor.getMinthreshold()) {
+                if (value < sensor.getMinthreshold() - sensor.getMinthreshold() * 0.2) {
+                    alert = new Alert(AlertLevel.CRITICAL, "Value is below threshold by more than 20%", sensor.code);
+                    alertes.add(alert);
+                    this.alert = alert;
+                } else {
+                    alert = new Alert(AlertLevel.WARNING, "Value is below threshold by less than 20%", sensor.code);
+                    alertes.add(alert);
+                    this.alert = alert;
                 }
-                else if(value > sensor.getMaxthreshold() ) {
-                    if(value  > sensor.getMaxthreshold() + sensor.getMaxthreshold() * 0.2) {
-                        alert = new Alert(AlertLevel.CRITICAL, "Value is above threshold by more than 20%");
-                        alertes.add(alert);
-                        this.alert = alert;
-                    }else{
-                        alert = new Alert(AlertLevel.WARNING, "Value is above threshold by less than 20%");
-                        alertes.add(alert);
-                        this.alert = alert;
-                    }
+            } else if (value > sensor.getMaxthreshold()) {
+                if (value > sensor.getMaxthreshold() + sensor.getMaxthreshold() * 0.2) {
+                    alert = new Alert(AlertLevel.CRITICAL, "Value is above threshold by more than 20%", sensor.code);
+                    alertes.add(alert);
+                    this.alert = alert;
+                } else {
+                    alert = new Alert(AlertLevel.WARNING, "Value is above threshold by less than 20%", sensor.code);
+                    alertes.add(alert);
+                    this.alert = alert;
                 }
-
-
-
-
-
-                }
-
-
-    
-
-
-
-
-
-
-
-
-
+            }
+        }
+    }
 }
- class GpsRecord extends Sensorrecord {
+
+class GpsRecord extends Sensorrecord {
     private int latitude;
     private int longitude;
 
     public GpsRecord(gpssensor sensor) {
-        super(sensor, timestamp, alertes, alert);
+        super(sensor, java.time.LocalDateTime.now().toString(), alertes, null);
+        this.latitude = sensor.getLatitude();
+        this.longitude = sensor.getLongitude();
+    }
+
+    public GpsRecord(gpssensor sensor, String timestamp) {
+        super(sensor, timestamp, alertes, null);
         this.latitude = sensor.getLatitude();
         this.longitude = sensor.getLongitude();
     }
@@ -130,27 +130,20 @@ class NumericalRecord extends Sensorrecord {
 
     @Override
     public void displayRecord() {
-        System.out.println("Sensor: " + sensor.getName());
-        System.out.println("Timestamp: " + timestamp);
-        System.out.println("Position: lat=" + latitude + ", lon=" + longitude);
+        java.lang.System.out.println("Sensor: " + (sensor != null ? sensor.getName() : "null"));
+        java.lang.System.out.println("Timestamp: " + timestamp);
+        java.lang.System.out.println("Position: lat=" + latitude + ", lon=" + longitude);
     }
 
-
-     public void TestThreshold() {
-        if(latitude < minthreshold || latitude > maxthreshold || longitude < minthreshold || longitude > maxthreshold) {
-            alert = new Alert(AlertLevel.CRITICAL, "Position is out of threshold");
-            alertes.add(alert);
-            this.alert = alert;
+    @Override
+    public void TestThreshold() {
+        if (sensor != null) {
+            if (latitude < sensor.getMinthreshold() || latitude > sensor.getMaxthreshold() ||
+                longitude < sensor.getMinthreshold() || longitude > sensor.getMaxthreshold()) {
+                alert = new Alert(AlertLevel.CRITICAL, "Position is out of threshold", sensor.code);
+                alertes.add(alert);
+                this.alert = alert;
+            }
         }
     }
-
-
-
-
-
-
-
-
-
-
 }

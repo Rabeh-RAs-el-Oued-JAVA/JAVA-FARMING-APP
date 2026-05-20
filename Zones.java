@@ -1,13 +1,12 @@
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-package Zones ; 
 
 public abstract class Zones {
     protected static int counter = 1;
     protected final int code;
     protected String name;
-    protected List<Sensor> sensorsList;
+    protected List<Sensors> sensorsList;
     protected String characteristic;
     protected Boolean statusActive;
     protected double O;
@@ -53,7 +52,7 @@ public abstract class Zones {
         return this.activeAlerts;
     }
 
-    public List<Sensor> getSensors() {
+    public List<Sensors> getSensors() {
         return this.sensorsList;
     }
 
@@ -62,17 +61,17 @@ public abstract class Zones {
         this.R = longitude;
     }
 
-    public void addSensor(Sensor sensor) {
+    public void addSensor(Sensors sensor) {
         if (sensor != null) {
             this.sensorsList.add(sensor);
         }
     }
 
-    public void removeSensor(Sensor sensor) {
+    public void removeSensor(Sensors sensor) {
         this.sensorsList.remove(sensor);
     }
 
-    public void editSensor(Sensor sensor, int index) {
+    public void editSensor(Sensors sensor, int index) {
         this.sensorsList.set(index, sensor);
     }
 
@@ -94,7 +93,7 @@ public abstract class Zones {
         this.statusActive = false;
     }
 
-    public void editSensors(List<Sensor> newSensorsList) {
+    public void editSensors(List<Sensors> newSensorsList) {
         this.sensorsList = new ArrayList<>(newSensorsList);
     }
 
@@ -107,7 +106,7 @@ public abstract class Zones {
     }
 
     public void display() {
-        System.out.println("Zone: " + this.name
+        java.lang.System.out.println("Zone: " + this.name
                 + " - Code: " + this.code
                 + " - Status: " + this.statusActive
                 + " - Characteristic: " + this.characteristic
@@ -131,7 +130,7 @@ abstract class Crops extends Zones {
     }
 
     public void displayGrowthStage() {
-        System.out.println("Growth Stage: " + this.growthStage);
+        java.lang.System.out.println("Growth Stage: " + this.growthStage);
     }
 
     public void updateGrowthStage() {
@@ -140,7 +139,7 @@ abstract class Crops extends Zones {
 
     public void displayCrops() {
         super.display();
-        System.out.println("Planting Date: " + this.plantingDate
+        java.lang.System.out.println("Planting Date: " + this.plantingDate
                 + " - Harvest Date: " + this.harvestDate
                 + " - Growth Stage: " + this.growthStage
                 + " - Soil Requirements: " + this.soilRequirements);
@@ -195,7 +194,7 @@ class CropsList extends Crops implements IRecordable {
 
     public void displayCropsList() {
         super.displayCrops();
-        System.out.println("Crops Type: " + this.cropsType + " - Crops Production: " + this.cropsProduction);
+        java.lang.System.out.println("Crops Type: " + this.cropsType + " - Crops Production: " + this.cropsProduction);
     }
 
     @Override
@@ -257,7 +256,7 @@ abstract class LiveStock extends Zones {
 
     public void displayLiveStock() {
         super.display();
-        System.out.println("Feeding Programme: " + this.feedingProgramme);
+        java.lang.System.out.println("Feeding Programme: " + this.feedingProgramme);
     }
 
     public void setFeedingProgramme(FeedingProgramme feedingProgramme) {
@@ -318,7 +317,7 @@ class Ruminant extends LiveStock implements IRecordable {
 
     public void displayRuminant() {
         super.displayLiveStock();
-        System.out.println("Ruminant Type: " + this.ruminantType + " - Milk Yield: " + this.milkYield);
+        java.lang.System.out.println("Ruminant Type: " + this.ruminantType + " - Milk Yield: " + this.milkYield);
     }
 
     @Override
@@ -387,7 +386,7 @@ class Poultry extends LiveStock implements IRecordable {
 
     public void displayPoultry() {
         super.displayLiveStock();
-        System.out.println("Poultry Type: " + this.poultryType + " - Egg Count: " + this.eggCount);
+        java.lang.System.out.println("Poultry Type: " + this.poultryType + " - Egg Count: " + this.eggCount);
     }
 
     @Override
@@ -485,7 +484,7 @@ abstract class Aquaculture extends Zones implements IRecordable {
         for (Animal animal : this.species) {
             animal.display();
         }
-        System.out.println("Nb Animals: " + this.species.size());
+        java.lang.System.out.println("Nb Animals: " + this.species.size());
     }
 
     public double recordValue() {
@@ -530,6 +529,13 @@ abstract class Aquaculture extends Zones implements IRecordable {
     }
 }
 
+class AquacultureList extends Aquaculture {
+    public AquacultureList(String name, String characteristic, FeedingProgramme feedProgramme) {
+        super(name, characteristic, feedProgramme);
+    }
+}
+
+
 class SoilRequirements {
     private double optimalPH;
     private double optimalMoisture;
@@ -540,7 +546,7 @@ class SoilRequirements {
     }
 
     public void display() {
-        System.out.println("Optimal PH: " + this.optimalPH + " - Optimal Moisture: " + this.optimalMoisture);
+        java.lang.System.out.println("Optimal PH: " + this.optimalPH + " - Optimal Moisture: " + this.optimalMoisture);
     }
 
     @Override
@@ -559,7 +565,7 @@ class FeedingProgramme {
     }
 
     public void display() {
-        System.out.println("Feed Type: " + this.feedType + " - Quantity: " + this.quantity);
+        java.lang.System.out.println("Feed Type: " + this.feedType + " - Quantity: " + this.quantity);
     }
 
     @Override
@@ -611,7 +617,7 @@ class Animal {
     }
 
     public void display() {
-        System.out.println("AnimalId: " + this.animalId
+        java.lang.System.out.println("AnimalId: " + this.animalId
                 + " - Species: " + this.species
                 + " - Age: " + this.age
                 + " - Weight: " + this.weight
@@ -687,7 +693,7 @@ class ProductionRecord {
     }
 
     public void display() {
-        System.out.println("RecordId: " + this.recordId
+        java.lang.System.out.println("RecordId: " + this.recordId
                 + " - RecordDate: " + this.recordDate
                 + " - RecordValue: " + this.recordValue
                 + " - RecordType: " + this.recordType
@@ -721,6 +727,26 @@ enum LocationType {
 
 enum CropsType {
     CEREAL, FRUITS, VEGETABLES
+}
+
+class RecordsFilter {
+    public static List<ProductionRecord> inDateRange(List<ProductionRecord> records, Date startDate, Date endDate) {
+        List<ProductionRecord> result = new ArrayList<>();
+        for (ProductionRecord record : records) {
+            if (!record.getRecordDate().before(startDate) && !record.getRecordDate().after(endDate)) {
+                result.add(record);
+            }
+        }
+        return result;
+    }
+
+    public static double total(List<ProductionRecord> records) {
+        double sum = 0;
+        for (ProductionRecord record : records) {
+            sum += record.getRecordValue();
+        }
+        return sum;
+    }
 }
 
 
